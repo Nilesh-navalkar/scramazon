@@ -1,0 +1,27 @@
+import scrapy
+
+class spidy(scrapy.Spider):
+    name='spidy'
+    HEADERS = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
+        "Cache-Control": "max-age=0",
+    }
+    start_urls=["https://www.amazon.in/s?k=toothpaste"]
+    def parse(self,response):
+        for r in response.css('div.MAIN-SEARCH_RESULTS-2'):
+            yield{
+                'names':r.css('h2.a-size-mini.a-spacing-none.a-color-base.s-line-clamp-3::text').get(),
+                # 'ratings':response.css('span[alt*="bubbles"]::attr(alt)').get(),
+                # 'url':response.css('a.review_count::attr(href)').get(),
+                'price':r.css('div.a-price::text').get()
+            }
+#scrapy crawl spidy -o  feast.json
